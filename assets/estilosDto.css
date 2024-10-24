@@ -1,0 +1,73 @@
+/* EstilosDto.css */
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f2f2f2;
+    margin: 0;
+    padding: 0;
+}
+
+form {
+    width: 80%;
+    max-width: 600px;
+    margin: 20px auto;
+    background-color: #F7F7F7; /* Color de fondo del formulario */
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+label {
+    font-weight: bold;
+}
+
+input[type="text"],
+input[type="email"],
+select,
+button {
+    width: calc(100% - 22px); /* Ajustar el ancho para tener en cuenta el borde */
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+button {
+    display: inline-block; /* Alinear los botones en línea */
+    padding: 10px 20px; /* Ajustar el relleno de los botones */
+    margin-left: 10px; /* Espacio entre los botones */
+    cursor: pointer;
+}
+
+button#guardar {
+    background-color: #4CAF50; /* Verde */
+    color: white;
+}
+
+button#consultar {
+    background-color: #008CBA; /* Azul */
+    color: white;
+}
+
+button#eliminar {
+    background-color: #f44336; /* Rojo */
+    color: white;
+}
+
+button#actualizar {
+    background-color: #FFD700; /* Amarillo */
+    color: black;
+}
+
+button:hover {
+    opacity: 0.8;
+}
+
+button:focus {
+    outline: none;
+}
+
+.error {
+    color: red;
+    font-size: 0.8em;
+}

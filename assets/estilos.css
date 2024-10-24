@@ -1,0 +1,45 @@
+/* Estilos para el banner */
+.banner {
+    text-align: center; /* Centrar el contenido del banner */
+    background-color: #ff0000; /* Color de fondo del banner */
+    padding: 20px 0; /* Espaciado interno del banner */
+    margin-bottom: 20px; /* Margen inferior del banner */
+}
+
+.banner img {
+    max-width: 100%; /* Ajustar la imagen al ancho del banner */
+    height: auto; /* Permitir que la altura de la imagen se ajuste automáticamente */
+}
+
+/* Estilos previos */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f4;
+}
+
+.container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+h1 {
+    text-align: center;
+}
+
+#imagenCorporativa {
+    max-width: 200px;
+    display: block;
+    margin: 0 auto;
+}
+
+.enlace-container {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+}

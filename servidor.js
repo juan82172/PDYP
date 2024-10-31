@@ -3,8 +3,10 @@ const bodyParser = require('body-parser');
 const { MongoClient } = require('mongodb');
 
 const app = express();
-const PORT = 3000;
-const url = 'mongodb://127.0.0.1:27017';
+//const PORT = 3000;
+const PORT = process.env.PORT || 3000;
+const url = process.env.MONGODB_URI;
+//const url = 'mongodb+srv://juanalvarez82172:juansantiago1.$@personas.c6bev.mongodb.net/?retryWrites=true&w=majority&appName=Personas';
 const dbName = 'Usuario';
 const collectionName = 'Personas';
 const path = require('path');

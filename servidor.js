@@ -8,7 +8,7 @@ const fs = require('fs'); // Para guardar el archivo XML si lo deseas
 const app = express();
 //const PORT = 3000;
 const PORT = process.env.PORT || 3000;
-const url = process.env.MONGODB_URI;
+const url = process.env.MONGODB_URI ?? 'mongodb+srv://juanalvarez82172:juansantiago1.$@personas.c6bev.mongodb.net/?retryWrites=true&w=majority&appName=Personas';
 //const url = 'mongodb+srv://juanalvarez82172:juansantiago1.$@personas.c6bev.mongodb.net/?retryWrites=true&w=majority&appName=Personas';
 const dbName = 'Usuario';
 const collectionName = 'Personas';
@@ -177,17 +177,44 @@ app.get('/exportarUsuariosXML', async (req, res) => {
         await client.connect();
         console.log('Conexión exitosa a MongoDB');
 
-        const db = client.db('Usuario');
-        const collection = db.collection('Personas');
+        const db = client.db(dbName);
+        const collection = db.collection(collectionName);
 
         // Consultar todos los usuarios
         const usuarios = await collection.find({}).toArray();
 
+        // Contar total de personas
+        const totalPersonas = usuarios.length;
+
+        // Contar el número de personas por género
+        const countMasculino = usuarios.filter(u => u.genero === 'masculino').length;
+        const countFemenino = usuarios.filter(u => u.genero === 'femenino').length;
+        const countOtro = usuarios.filter(u => u.genero === 'otro').length;
+
+        // Calcular los porcentajes
+        const porcentajeMasculino = ((countMasculino / totalPersonas) * 100).toFixed(2);
+        const porcentajeFemenino = ((countFemenino / totalPersonas) * 100).toFixed(2);
+        const porcentajeOtro = ((countOtro / totalPersonas) * 100).toFixed(2);
+
         // Construir la estructura del XML
-        const builder = new xml2js.Builder({ headless: true });
+        const builder = new xml2js.Builder({
+            headless: true,         // Eliminar la cabecera por defecto
+            pretty: true,           // Formato bonito con indentación
+            indent: '  ',           // Espaciado de la indentación
+            renderOpts: { 'pretty': true }
+        });
 
         // Crear un objeto JSON para generar el XML
         const usuariosData = {
+            contador: {
+                totalPersonas: totalPersonas,
+                masculino: countMasculino,
+                femenino: countFemenino,
+                otro: countOtro,
+                porcentajeMasculino: porcentajeMasculino,
+                porcentajeFemenino: porcentajeFemenino,
+                porcentajeOtro: porcentajeOtro
+            },
             usuarios: usuarios.map(usuario => ({
                 identificacion: usuario.identificacion,
                 nombres: usuario.nombres,

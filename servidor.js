@@ -2,6 +2,9 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const { MongoClient } = require('mongodb');
 
+const xml2js = require('xml2js'); // Para convertir JSON a XML
+const fs = require('fs'); // Para guardar el archivo XML si lo deseas
+
 const app = express();
 //const PORT = 3000;
 const PORT = process.env.PORT || 3000;
@@ -10,6 +13,7 @@ const url = process.env.MONGODB_URI;
 const dbName = 'Usuario';
 const collectionName = 'Personas';
 const path = require('path');
+const { getActiveResourcesInfo } = require('process');
 
 // Middleware para analizar el cuerpo de las solicitudes JSON
 app.use(bodyParser.json());
@@ -76,6 +80,7 @@ app.get('/consultarPersona/:identificacion', async (req, res) => {
             // Si no se encuentra ninguna persona con la identificación proporcionada, responder con un mensaje
             res.status(404).send('Persona no encontrada');
         }
+
     } catch (error) {
         console.error('Error al conectar con MongoDB:', error);
         res.status(500).send('Error al conectar con MongoDB. Por favor, inténtelo de nuevo.');
@@ -156,6 +161,53 @@ app.put('/actualizarPersona/:identificacion', async (req, res) => {
             // Si no se pudo actualizar la persona, responder con un mensaje de error
             res.status(500).send('Error al actualizar los datos de la persona');
         }
+    } catch (error) {
+        console.error('Error al conectar con MongoDB:', error);
+        res.status(500).send('Error al conectar con MongoDB. Por favor, inténtelo de nuevo.');
+    } finally {
+        await client.close();
+    }
+});
+
+// Ruta para obtener todos los usuarios y generar el XML
+app.get('/exportarUsuariosXML', async (req, res) => {
+    const client = new MongoClient(url);
+
+    try {
+        await client.connect();
+        console.log('Conexión exitosa a MongoDB');
+
+        const db = client.db('Usuario');
+        const collection = db.collection('Personas');
+
+        // Consultar todos los usuarios
+        const usuarios = await collection.find({}).toArray();
+
+        // Construir la estructura del XML
+        const builder = new xml2js.Builder({ headless: true });
+
+        // Crear un objeto JSON para generar el XML
+        const usuariosData = {
+            usuarios: usuarios.map(usuario => ({
+                identificacion: usuario.identificacion,
+                nombres: usuario.nombres,
+                apellidos: usuario.apellidos,
+                genero: usuario.genero,
+                fechaNacimiento: usuario.fechaNacimiento,
+                email: usuario.email
+            }))
+        };
+
+        // Convertir el objeto JSON a XML
+        const xml = builder.buildObject(usuariosData);
+
+        // Establecer el tipo de contenido como XML y devolver la respuesta
+        res.header('Content-Type', 'application/xml');
+        res.status(200).send(xml);
+
+        // Guardar el archivo XML en el servidor si lo deseas
+        fs.writeFileSync('usuarios.xml', xml); // Guardar en el archivo 'usuarios.xml'
+
     } catch (error) {
         console.error('Error al conectar con MongoDB:', error);
         res.status(500).send('Error al conectar con MongoDB. Por favor, inténtelo de nuevo.');
